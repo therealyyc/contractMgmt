@@ -1,9 +1,12 @@
 const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 
 
 const config = {
   mode: 'development',
-  entry: './index.js',
+  entry: './App.jsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js'
@@ -11,7 +14,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.s(c|a)ss$/,
+        test: /\.(scss|sass)$/,
         loader: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
@@ -19,7 +22,18 @@ const config = {
         loader: 'babel-loader'
       }
     ]
-  }
+  },
+  devServer: {
+    contentBase: './test.html',// 依赖于哪一个html文件
+    hot: true
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: './test.html'
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ]
 }
 
 
