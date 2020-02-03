@@ -1,0 +1,32 @@
+.login-page {
+  display: flex;
+  height: 100%;
+  width: 100%;
+
+  .logo-container {
+    flex: 4;
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+
+  .login-container {
+    flex: 6;
+    display: block;
+    position: relative;
+    background-color: #f0f2f5;
+    .form-container {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 70%;
+      height: 30%;
+      margin: auto;
+      .ant-form-item-control {
+        text-align: center;
+      }
+    }
+  }
+}

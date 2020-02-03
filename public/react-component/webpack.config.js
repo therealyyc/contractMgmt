@@ -9,10 +9,18 @@ const config = {
   entry: './index.jsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
+    // publicPath: '/',
     filename: '[name].bundle.js'
+  },
+  resolve: {
+    extensions: [".js", ".jsx"]
   },
   module: {
     rules: [
+      {
+        test: /\.css$/,
+        loader: ['style-loader', 'css-loader']
+      },
       {
         test: /\.(scss|sass)$/,
         loader: ['style-loader', 'css-loader', 'sass-loader']
@@ -23,13 +31,16 @@ const config = {
       },
       {
         test: /\.jsx$/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        query: { compact: false }
       }
     ]
   },
   devServer: {
-    contentBase: './test.html',// 依赖于哪一个html文件
-    hot: true
+    // contentBase: './test.html',// 依赖于哪一个html文件
+    port: '8088',
+    hot: true,
+    historyApiFallback: true
   },
   plugins: [
     new HtmlWebpackPlugin({
