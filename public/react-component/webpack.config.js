@@ -6,7 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
   mode: 'development',
-  entry: './App.jsx',
+  entry: './index.jsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js'
@@ -16,6 +16,10 @@ const config = {
       {
         test: /\.(scss|sass)$/,
         loader: ['style-loader', 'css-loader', 'sass-loader']
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader'
       },
       {
         test: /\.jsx$/,
