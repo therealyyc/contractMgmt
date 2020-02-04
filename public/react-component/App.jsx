@@ -10,6 +10,7 @@ import {
   Link
 } from 'react-router-dom'
 import 'antd/dist/antd.css';
+import './apis/contracts'
 
 function App(props) {
   return (
