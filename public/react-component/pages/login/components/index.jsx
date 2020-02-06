@@ -1,14 +1,21 @@
-import React, { Fragment } from 'react'
-import { connect } from 'react-redux';
-import { Form, Icon, Input, Button, Row, Col } from 'antd'
+import React, { Fragment, useState } from 'react'
+import { connect, useDispatch } from 'react-redux';
+import { Form, Icon, Input, Button, Row, Col, message } from 'antd'
 import { useHistory } from "react-router-dom";
 import './style.scss'
+import {
+  postLoginApi, request_login,
+  request_login_success,
+  request_login_failure
+} from '../service/action'
 
 function LoginForm(props) {
 
   const { form } = props;
   const { getFieldDecorator } = form;
   let history = useHistory()
+  let dispatch = useDispatch()
+  const [btnLoading, setBtnLoading] = useState(false)
 
   const formItemLayout = {
     labelCol: {
@@ -23,14 +30,20 @@ function LoginForm(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    form.validateFields((err, values) => {
+    form.validateFields(async (err, values) => {
       if (!err) {
         // console.log('Received values of form: ', values);
+        setBtnLoading(true)
         const { username, password } = values
-        if (username === "yicheng" && password === "123") {
+        let res = await request_login(values)
+        setBtnLoading(false)
+        console.log('res', res)
+        if (res.status == 200) {
+          dispatch(request_login_success())
           history.replace('/home')
         } else {
-          alert('用户名或密码错误')
+          dispatch(request_login_failure())
+          message.error('用户名或密码错误')
         }
       }
     });
@@ -73,7 +86,7 @@ function LoginForm(props) {
           xs: { span: 20 },
           sm: { span: 22 },
         }}>
-          <Button type="primary" htmlType="submit" size="large" className="login-form-button">
+          <Button type="primary" htmlType="submit" size="large" className="login-form-button" loading={btnLoading}>
             登陆
           </Button>
         </Form.Item>

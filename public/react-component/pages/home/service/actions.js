@@ -5,6 +5,7 @@ export const ACTION_SET_CONTRACTS = 'SET_CONTRACTS'
 export const ACTION_SET_ORIGIN_CONTRACTS = 'SET_ORIGIN_CONTRACTS'
 export const ACTION_SET_TABLE_LOADING = 'SET_TABLE_LOADING'
 export const ACTION_SET_SEARCH_VALUE = 'SET_SEARCH_VALUE'
+export const ACTION_SET_CONTRACT_TYPES = 'CONTRACT_TYPES'
 
 
 export function setContracts(contracts) {
@@ -85,6 +86,38 @@ export const deleteApi = () => {
     axios({
       url: `/api/contracts`,
       method: 'DELETE'
+    })
+  )
+}
+
+
+/**
+ * logic code
+ */
+
+export const fetchContractType = () => {
+  return Promise.resolve(
+    axios({
+      url: `/api/contract/type`,
+      method: 'GET'
+    })
+  )
+}
+
+export const setContractTypes = (contractType) => {
+  return {
+    type: ACTION_SET_CONTRACT_TYPES,
+    payload: contractType,
+    name: 'contractTypes'
+  }
+}
+
+
+export const postEditLimit = (limit) => {
+  return Promise.resolve(
+    axios({
+      url: `/api/contracts`,
+      method: 'POST'
     })
   )
 }

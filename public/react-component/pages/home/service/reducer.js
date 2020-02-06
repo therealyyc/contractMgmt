@@ -2,14 +2,17 @@ import {
   ACTION_SET_CONTRACTS,
   ACTION_SET_ORIGIN_CONTRACTS,
   ACTION_SET_TABLE_LOADING,
-  ACTION_SET_SEARCH_VALUE
+  ACTION_SET_SEARCH_VALUE,
+  ACTION_SET_CONTRACT_TYPES
 } from './actions'
 
 const initialState = {
   contracts: [],
   origin_contracts: [],
   searchValue: '',
-  table_loading: false
+  table_loading: false,
+  contractTypes: [],
+  limit: 3
 }
 
 export default function (state = initialState, action) {
@@ -25,6 +28,10 @@ export default function (state = initialState, action) {
         [name]: payload
       })
     case ACTION_SET_TABLE_LOADING:
+      return Object.assign({}, state, {
+        [name]: payload
+      })
+    case ACTION_SET_CONTRACT_TYPES:
       return Object.assign({}, state, {
         [name]: payload
       })
@@ -56,4 +63,5 @@ export default function (state = initialState, action) {
     default:
       return state
   }
+  return state;
 }

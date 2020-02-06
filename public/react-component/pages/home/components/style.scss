@@ -1,7 +1,7 @@
 .contract-list {
   > section:first-child {
-    display: flex;
-    justify-content: space-between;
+    display: block;
+    overflow: hidden;
     margin-bottom: 20px;
   }
 }

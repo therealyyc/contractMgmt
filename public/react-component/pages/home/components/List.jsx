@@ -25,10 +25,13 @@ import {
   setOriginContracts,
   deleteApi,
   refreshTableData,
-  setSearchValue
+  setSearchValue,
+  fetchContractType,
+  setContractTypes
 } from '../service/actions'
 
 import ContractModal from './Modal'
+import DeadLineModal from './DeadLineModal'
 import './style.scss'
 
 const { Search } = Input;
@@ -41,7 +44,8 @@ function List(props) {
 
   const {
     contracts,
-    table_loading
+    table_loading,
+    contractTypes
   } = useSelector(state => state.home)
   const dispatch = useDispatch()
 
@@ -56,28 +60,60 @@ function List(props) {
 
   }, [])
 
+  const findNameByid = (arr, id) => {
+    let ret = arr.find(i => i.id === id)
+    if (ret) {
+      return ret.name
+    } else {
+      return ''
+    }
+  }
+
+  const transformStatus = (id) => {
+    switch (id) {
+      case "1":
+        return <Tag color="magenta">已过期</Tag>
+      case "2":
+        return <Tag color="volcano">即将过期</Tag>
+      case "3":
+        return <Tag color="green">有效期内</Tag>
+      default:
+        return ''
+    }
+  }
+
 
   const columns = [
     {
       title: '合同类型',
       dataIndex: 'type',//对应数据项之中的
-      render: text => <a>{text}</a>,
+      filters: [
+        {
+          text: '合同',
+          value: '1'
+        },
+        {
+          text: '分包合同',
+          value: '2'
+        }
+      ],
+      filterMultiple: false,
+      onFilter: (value, record) => {
+        return value === record.type;
+      },
+      render: text => <a>{findNameByid(contractTypes, text)}</a>,
     },
     {
       title: '产品名称',
       dataIndex: 'product'
     },
     {
-      title: '产品价格',
-      dataIndex: 'price'
+      title: '部门',
+      dataIndex: 'department'
     },
     {
-      title: '客户',
+      title: '客户/供应商',
       dataIndex: 'client',
-    },
-    {
-      title: '签约人',
-      dataIndex: 'signer'
     },
     {
       title: '签约时间',
@@ -86,6 +122,33 @@ function List(props) {
     {
       title: '过期时间',
       dataIndex: 'DueTime'
+    },
+    {
+      title: '过期状态',
+      dataIndex: 'status',
+      filters: [
+        {
+          text: '已过期',
+          value: '1'
+        },
+        {
+          text: '即将过期',
+          value: '2'
+        },
+        {
+          text: '有效期内',
+          value: '3'
+        }
+      ],
+      filterMultiple: false,
+      onFilter: (value, record) => {
+        return value === record.status;
+      },
+      render: text => transformStatus(text)
+    },
+    {
+      title: '备注',
+      dataIndex: 'resume'
     },
     {
       title: '操作',
@@ -101,7 +164,9 @@ function List(props) {
   ];
 
 
+
   const [visible, setVisible] = useState(false)
+  const [deadlineModalVisible, setDeadlineModalVisible] = useState(false)
   const [mode, setMode] = useState('add')
   const info = useRef({})
   const contractId = useRef('99')
@@ -141,12 +206,12 @@ function List(props) {
     <Fragment>
       <main className="contract-list">
         <section>
-          <Button type="primary" onClick={handleModalVisible}>添加合同</Button>
-
+          <Button style={{ float: 'left' }} type="primary" onClick={handleModalVisible}>添加合同</Button>
+          <Button style={{ float: 'left', marginLeft: '20px' }} type="primary" onClick={() => { setDeadlineModalVisible(true) }}>设定期限</Button>
           <Input
             prefix={<Icon type="search" />}
             placeholder="输入搜索内容"
-            style={{ width: 200 }}
+            style={{ width: 200, float: "right" }}
             onChange={e => { dispatch(setSearchValue(e.target.value)) }}
           >
           </Input>
@@ -163,12 +228,17 @@ function List(props) {
         </section>
       </main>
       <ContractModal
+        title="增加合同"
         visible={visible}
         setVisible={setVisible}
         mode={mode}
         info={info.current}
       />
-
+      <DeadLineModal
+        title="配置"
+        visible={deadlineModalVisible}
+        setVisible={setDeadlineModalVisible}
+      />
     </Fragment>
   )
 }
