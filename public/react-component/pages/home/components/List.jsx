@@ -54,8 +54,9 @@ function List(props) {
   useEffect(() => {
     (async () => {
       let res = await fetchApi()
-      dispatch(setContracts(_.get(res, ['data', 'data'])))
-      dispatch(setOriginContracts(_.get(res, ['data', 'data'])))
+      console.log('res', res)
+      dispatch(setContracts(_.get(res, ['data'], [])))
+      dispatch(setOriginContracts(_.get(res, ['data'], [])))
     })()
 
   }, [])
@@ -71,11 +72,11 @@ function List(props) {
 
   const transformStatus = (id) => {
     switch (id) {
-      case "1":
+      case 1:
         return <Tag color="magenta">已过期</Tag>
-      case "2":
+      case 2:
         return <Tag color="volcano">即将过期</Tag>
-      case "3":
+      case 3:
         return <Tag color="green">有效期内</Tag>
       default:
         return ''
@@ -86,7 +87,7 @@ function List(props) {
   const columns = [
     {
       title: '合同类型',
-      dataIndex: 'type',//对应数据项之中的
+      dataIndex: 'contract_type',//对应数据项之中的
       filters: [
         {
           text: '合同',
@@ -113,7 +114,7 @@ function List(props) {
     },
     {
       title: '客户/供应商',
-      dataIndex: 'client',
+      dataIndex: 'contract_client',
     },
     {
       title: '签约时间',
@@ -121,11 +122,11 @@ function List(props) {
     },
     {
       title: '过期时间',
-      dataIndex: 'DueTime'
+      dataIndex: 'dueTime'
     },
     {
       title: '过期状态',
-      dataIndex: 'status',
+      dataIndex: 'dueStatus',
       filters: [
         {
           text: '已过期',
@@ -157,7 +158,7 @@ function List(props) {
         <span>
           <a onClick={() => { handleEdit(record) }}>修改</a>
           <Divider type="vertical" />
-          <a onClick={handleDelete}>删除</a>
+          <a onClick={() => { handleDelete(record) }}>删除</a>
         </span>
       ),
     },
@@ -170,6 +171,7 @@ function List(props) {
   const [mode, setMode] = useState('add')
   const info = useRef({})
   const contractId = useRef('99')
+  console.log('contracts', contracts)
 
   const handleModalVisible = () => {
     setMode('add')
@@ -185,11 +187,11 @@ function List(props) {
     setVisible(true)
   }
 
-  const handleDelete = () => {
+  const handleDelete = (info) => {
     confirm({
       title: '你确定要删除这一个合同吗',
       onOk: async () => {
-        let res = await deleteApi()
+        let res = await deleteApi(info.id)
         if (res) {
           message.success('删除成功')
           dispatch(refreshTableData())

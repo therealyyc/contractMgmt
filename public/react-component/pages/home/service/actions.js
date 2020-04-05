@@ -44,11 +44,11 @@ export function refreshTableData() {
     console.log('111')
     dispatch(setTableLoading(true))
     axios({
-      url: `/api/contracts`,
+      url: `/api/contract/list`,
       method: 'GET'
     }).then((res) => {
-      dispatch(setContracts(_.get(res, ['data', 'data'])))
-      dispatch(setOriginContracts(_.get(res, ['data', 'data'])))
+      dispatch(setContracts(_.get(res, ['data'], [])))
+      dispatch(setOriginContracts(_.get(res, ['data'], [])))
       dispatch(setTableLoading(false))
     })
   }
@@ -57,34 +57,60 @@ export function refreshTableData() {
 export const fetchApi = () => {
   return Promise.resolve(
     axios({
-      url: `/api/contracts`,
+      url: `/api/contract/list`,
       method: 'GET'
     })
   )
 }
 
-export const addApi = () => {
+export const addApi = (data) => {
+  let postData = {
+    contract_type: data.contract_type,
+    contract_client: data.contract_client,
+    oldClient: data.oldClient,
+    signTime: data.signTime,
+    dueTime: data.dueTime,
+    price: data.price,
+    product: data.product,
+    signer: data.signer,
+    department: data.department,
+    resume: data.resume
+  }
   return Promise.resolve(
     axios({
-      url: `/api/contracts`,
-      method: 'POST'
+      url: `/api/contract/addContract`,
+      method: 'POST',
+      data: postData
     })
   )
 }
 
-export const editApi = () => {
+export const editApi = (data, id) => {
+  let putData = {
+    contract_type: data.contract_type,
+    contract_client: data.contract_client,
+    oldClient: data.oldClient,
+    signTime: data.signTime,
+    dueTime: data.dueTime,
+    price: data.price,
+    product: data.product,
+    signer: data.signer,
+    department: data.department,
+    resume: data.resume
+  }
   return Promise.resolve(
     axios({
-      url: `/api/contracts`,
-      method: 'PUT'
+      url: `/api/contract/editContract?id=${id}`,
+      method: 'PUT',
+      data: putData
     })
   )
 }
 
-export const deleteApi = () => {
+export const deleteApi = (id) => {
   return Promise.resolve(
     axios({
-      url: `/api/contracts`,
+      url: `/api/contract/deleteContract?id=${id}`,
       method: 'DELETE'
     })
   )

@@ -1,4 +1,5 @@
 const { exec } = require('../db/mysql')
+const moment = require('moment')
 
 const getAllcontracts = () => {
   const sql = `select * from yc_contracts where state = 1;`
@@ -8,16 +9,19 @@ const getAllcontracts = () => {
 
 const addContract = (params) => {
   const sql = `
-  INSERT INTO contractmgmt.yc_contracts (contract_type,contract_client,signTime,dueTime,price,product,signer,department)
+  INSERT INTO contractmgmt.yc_contracts (contract_type,oldClient,contract_client,signTime,dueTime,price,product,signer,department,resume)
   VALUES (
     '${params.contract_type}',
+    '${params.oldClient}',
     '${params.contract_client}',
-    '${params.signTime}',
-    '${params.dueTime}',
-    ${params.price},
+    '${moment(params.signTime).format('YYYY-MM-DD')}',
+    '${moment(params.dueTime).format('YYYY-MM-DD')}',
+    ${params.price || null},
     '${params.product}',
     '${params.signer}',
-    '${params.department}')
+    '${params.department}',
+    '${params.resume}'
+    )
   `
   return exec(sql).catch(err => console.log(err))
 }
@@ -27,15 +31,18 @@ const editContract = (id, params) => {
   UPDATE contractmgmt.yc_contracts
   SET
   contract_type = '${params.contract_type}',
+  oldClient='${params.oldClient}',
   contract_client = '${params.contract_client}',
-  signTime = '${params.signTime}',
-  dueTime = '${params.dueTime}',
-  price = ${params.price},
+  signTime = '${moment(params.signTime).format('YYYY-MM-DD')}',
+  dueTime = '${moment(params.dueTime).format('YYYY-MM-DD')}',
+  price = ${params.price || null},
   product = '${params.product}',
   signer = '${params.signer}',
-  department = '${params.department}'
+  department = '${params.department}',
+  resume = '${params.resume}'
   where id = ${id}
   `
+  console.log('sql', sql)
   return exec(sql).catch(err => console.log(err))
 }
 

@@ -48,12 +48,18 @@ function ContractModal(props) {
     info
   } = props
 
-  const {
-    contractTypes
-  } = useSelector(state => state.home)
+
   const [btnLoading, setBtnLoading] = useState(false)
   const { getFieldDecorator } = form;
   const dispatch = useDispatch()
+  console.log('info', info)
+  const contractTypes = [{
+    id: 1,
+    name: '合同'
+  }, {
+    id: 2,
+    name: '分包合同'
+  }]
 
 
   const content = (
@@ -62,8 +68,8 @@ function ContractModal(props) {
         <Row gutter={[24, 8]}>
           <Col span={8}>
             <Form.Item label="合同类型">
-              {getFieldDecorator('type', {
-                initialValue: mode === 'edit' ? info.type : '',
+              {getFieldDecorator('contract_type', {
+                initialValue: mode === 'edit' ? info.contract_type : '',
                 rules: [
                   {
                     required: true,
@@ -92,8 +98,8 @@ function ContractModal(props) {
           </Col>
           <Col span={8}>
             <Form.Item label="客户/供应商">
-              {getFieldDecorator('client', {
-                initialValue: mode === 'edit' ? info.client : '',
+              {getFieldDecorator('contract_client', {
+                initialValue: mode === 'edit' ? info.contract_client : '',
                 rules: [
                   {
                     required: true,
@@ -106,7 +112,7 @@ function ContractModal(props) {
           <Col span={8}>
             <Form.Item label="签约时间">
               {getFieldDecorator('signTime', {
-                initialValue: mode === 'edit' ? moment(info.signTime) : '',
+                initialValue: mode === 'edit' ? moment(info.signTime) : null,
                 rules: [
                   {
                     required: true,
@@ -118,8 +124,8 @@ function ContractModal(props) {
           </Col>
           <Col span={8}>
             <Form.Item label="合同到期时间">
-              {getFieldDecorator('DueTime', {
-                initialValue: mode === 'edit' ? moment(info.DueTime) : '',
+              {getFieldDecorator('dueTime', {
+                initialValue: mode === 'edit' ? moment(info.dueTime) : null,
                 rules: [
                   {
                     required: true,
@@ -213,9 +219,9 @@ function ContractModal(props) {
         setBtnLoading(true)
         let res;
         if (mode === 'add') {
-          res = await addApi()
+          res = await addApi(values)
         } else {
-          res = await editApi()
+          res = await editApi(values, info.id)
         }
         if (res) {
           setBtnLoading(false)

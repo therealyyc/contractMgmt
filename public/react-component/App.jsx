@@ -12,7 +12,7 @@ import {
   useHistory
 } from 'react-router-dom'
 import 'antd/dist/antd.css';
-import './apis/contracts'
+// import './apis/contracts'
 
 
 
@@ -35,7 +35,7 @@ function PrivateRoute({
   return (
     <Route {...rest} render={
       (props) => {
-        return isLogin ? (
+        return true ? (
           <Comp {...props}></Comp>
         ) : (
             <Redirect to={{

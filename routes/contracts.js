@@ -1,18 +1,31 @@
 const express = require('express')
 const router = express.Router()
-const contractsController = require('../service/contracts')
+const contractsController = require('../controller/contracts')
 const {
   SuccessModel,
   ErrorModel
 } = require('../model/resModel')
 
-router.get('/list', function (req, res, next) {
-  contractsController.getAllcontracts().then(data => {
-    res.json(data)
-  })
+// router.get('/list', function (req, res, next) {
+//   contractsController.getAllcontracts().then(data => {
+//     res.json(data)
+//   })
+// })
+
+router.get('/list', async function (req, res, next) {
+  try {
+    let result = await contractsController.getAllcontracts()
+    res.json(result)
+  } catch (e) {
+    console.log('e', e)
+  }
 })
 
-router.post('/contract', function (req, res) {
+
+
+
+
+router.post('/addContract', function (req, res) {
   const params = req.body
   contractsController.addContract(params).then(data => {
     if (data.affectedRows) {
@@ -23,7 +36,7 @@ router.post('/contract', function (req, res) {
   })
 })
 
-router.put('/contract', function (req, res) {
+router.put('/editContract', function (req, res) {
   const params = req.body
   const { id } = req.query
   contractsController.editContract(id, params).then(data => {
@@ -35,7 +48,7 @@ router.put('/contract', function (req, res) {
   })
 })
 
-router.delete('/contract', function (req, res) {
+router.delete('/deleteContract', function (req, res) {
   const { id } = req.query
   contractsController.deleteContract(id).then(data => {
     if (data.affectedRows) {

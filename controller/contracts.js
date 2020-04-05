@@ -1,8 +1,31 @@
 // YC_CONTRACTS
 const contractsService = require('../service/contracts')
+const _ = require('lodash')
+const moment = require('moment')
 
-const getAllcontracts = () => {
-  return contractsService.getAllcontracts()
+const getAllcontracts = async () => {
+  const limitation = 3;
+  let contracts = await contractsService.getAllcontracts()
+  //console.log()
+  let limitedContracts = _.map(contracts, (contract) => {
+    let recordDueDate = moment(contract.dueTime)
+    /**
+     * 1.dueDate超过今天 --- 已过期  1
+     * 2.dueDate + 限制时间 超过今天 --- 即将过期 2
+     * 3.dueDate + 限制时间小于今天  ---- 安全
+     */
+    if (recordDueDate < moment()) {
+      _.set(contract, 'dueStatus', 1)
+    } else if (recordDueDate < moment().add(limitation, 'M')) {
+      _.set(contract, 'dueStatus', 2)
+    } else {
+      _.set(contract, 'dueStatus', 3)
+    }
+    return {
+      ...contract
+    }
+  })
+  return limitedContracts
 }
 const addContract = (params) => {
   return contractsService.addContract(params)
