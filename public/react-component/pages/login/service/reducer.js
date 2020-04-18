@@ -11,7 +11,7 @@ import {
 const initialState = {
   isLogin: false,
   loginLoading: false,
-  role: "admin"
+  role: "staff"
 }
 
 

@@ -2,6 +2,17 @@
 
 contract management System
 
+# 环境
+
+- nodeJS
+  - 版本：10.15.1
+  - 官网：https://nodejs.org/zh-cn/
+- nginx
+  - 版本:1.16.1
+  - 官网：http://nginx.org/en/download.html
+- vscode
+  - 任何版本
+
 # 启动服务
 
 ## 启动 nginx

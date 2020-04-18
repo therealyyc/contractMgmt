@@ -7,6 +7,7 @@ var ejs = require('ejs');
 
 var indexRouter = require('./routes/index');
 const contractRouter = require('./routes/contracts')
+const loginRouter = require('./routes/login')
 
 var app = express();
 
@@ -27,7 +28,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/react-component/dist')));
 
 app.use('/', indexRouter);
+app.use('/api/login', loginRouter)
 app.use('/api/contract', contractRouter)
+
 
 // catch 404 and forward to error handler
 // app.use(function (req, res, next) {

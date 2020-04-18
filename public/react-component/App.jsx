@@ -1,5 +1,5 @@
-import React, { Fragment, Component } from 'react'
-import { Provider, useSelector } from 'react-redux'
+import React, { Fragment, Component, useEffect } from 'react'
+import { Provider, useSelector, useDispatch } from 'react-redux'
 import store from './store/index.js'
 import Login from './pages/login/components/index.jsx'
 import Home from './pages/home/index.jsx'
@@ -12,6 +12,9 @@ import {
   useHistory
 } from 'react-router-dom'
 import 'antd/dist/antd.css';
+import {
+  request_login_success
+} from './pages/login/service/action'
 // import './apis/contracts'
 
 
@@ -32,10 +35,11 @@ function Test() {
 function PrivateRoute({
   component: Comp, isLogin, ...rest
 }) {
+  console.log('priaveteComp', isLogin)
   return (
     <Route {...rest} render={
       (props) => {
-        return true ? (
+        return isLogin ? (
           <Comp {...props}></Comp>
         ) : (
             <Redirect to={{
@@ -51,13 +55,15 @@ function PrivateRoute({
 
 function App(props) {
   const { isLogin } = useSelector(state => state.login)
+  const dispatch = useDispatch()
+
   return (
     <Fragment>
       <Router>
         <Switch>
           <Route exact path="/" component={Login}>
           </Route>
-          <PrivateRoute exact path="/home" component={Home} isLogin={isLogin}>
+          <PrivateRoute exact path="/home" component={Home} isLogin={JSON.parse(localStorage.getItem('loginStatus'))}>
           </PrivateRoute>
           <Route exact path="/Test" component={Test}>
           </Route>

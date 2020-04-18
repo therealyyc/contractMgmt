@@ -6,6 +6,7 @@ export const ACTION_SET_ORIGIN_CONTRACTS = 'SET_ORIGIN_CONTRACTS'
 export const ACTION_SET_TABLE_LOADING = 'SET_TABLE_LOADING'
 export const ACTION_SET_SEARCH_VALUE = 'SET_SEARCH_VALUE'
 export const ACTION_SET_CONTRACT_TYPES = 'CONTRACT_TYPES'
+export const ACTION_SET_CONTRACT_LIMIT = 'SET_CONTRACT_LIMIT'
 
 
 export function setContracts(contracts) {
@@ -139,11 +140,32 @@ export const setContractTypes = (contractType) => {
 }
 
 
-export const postEditLimit = (limit) => {
+export const fetchLimit = () => {
   return Promise.resolve(
     axios({
-      url: `/api/contracts`,
-      method: 'POST'
+      url: `/api/contract/limitation`,
+      method: 'GET'
     })
   )
+}
+
+
+export const postEditLimit = (values) => {
+  let data = {}
+  data.limitation = values.limit
+  return Promise.resolve(
+    axios({
+      url: `/api/contract/limitation`,
+      method: 'PUT',
+      data
+    })
+  )
+}
+
+export const setContractLimit = (limit) => {
+  return {
+    type: ACTION_SET_CONTRACT_LIMIT,
+    payload: limit,
+    name: 'limit'
+  }
 }

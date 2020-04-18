@@ -6,8 +6,10 @@ import './style.scss'
 import {
   postLoginApi, request_login,
   request_login_success,
-  request_login_failure
+  request_login_failure,
+  setRole
 } from '../service/action'
+import * as _ from 'lodash'
 
 function LoginForm(props) {
 
@@ -34,12 +36,17 @@ function LoginForm(props) {
       if (!err) {
         // console.log('Received values of form: ', values);
         setBtnLoading(true)
-        const { username, password } = values
         let res = await request_login(values)
         setBtnLoading(false)
         console.log('res', res)
-        if (res.status == 200) {
+        if (_.get(res, ['data', 'errno'], 1) === 0) {
+          // login successfully
+          localStorage.setItem('loginStatus', true)
+          localStorage.setItem('role', _.get(res, ['data', 'userrole'], 'staff'))
+          dispatch(setRole(_.get(res, ['data', 'userrole'], 'staff')))
           dispatch(request_login_success())
+          // setlocalStorageFlag
+
           history.replace('/home')
         } else {
           dispatch(request_login_failure())

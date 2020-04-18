@@ -59,5 +59,25 @@ router.delete('/deleteContract', function (req, res) {
   })
 })
 
+router.get('/limitation', function (req, res) {
+  contractsController.getContractLimitation().then(data => {
+    console.log('data', data)
+    res.json(data[0])
+  }).catch((err) => {
+    console.log('err', err)
+  })
+})
+
+router.put('/limitation', function (req, res) {
+  const { limitation } = req.body
+  contractsController.updateContractLimitation(limitation).then(data => {
+    if (data.affectedRows) {
+      res.json(new SuccessModel('success'))
+    } else {
+      res.json(new ErrorModel('fail'))
+    }
+  })
+})
+
 
 module.exports = router;

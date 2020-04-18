@@ -23,6 +23,7 @@ import {
 } from 'antd';
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
+import locale from 'antd/lib/date-picker/locale/zh_CN';
 import {
   fetchContractType,
   setContractTypes
@@ -30,29 +31,30 @@ import {
 
 const { Option } = Select;
 const { TextArea } = Input;
+moment.locale('zh-cn')
 
 function ContractModal(props) {
 
-  useEffect(() => {
-    (async () => {
-      let typeRes = await fetchContractType()
-      dispatch(setContractTypes(_.get(typeRes, ['data', 'data'])))
-    })()
+  // useEffect(() => {
+  //   (async () => {
+  //     let typeRes = await fetchContractType()
+  //     dispatch(setContractTypes(_.get(typeRes, ['data', 'data'])))
+  //   })()
 
-  }, [])
+  // }, [])
   const {
     form,
     visible,
     setVisible,
     mode,
-    info
+    info,
+    role
   } = props
 
 
   const [btnLoading, setBtnLoading] = useState(false)
   const { getFieldDecorator } = form;
   const dispatch = useDispatch()
-  console.log('info', info)
   const contractTypes = [{
     id: 1,
     name: '合同'
@@ -84,19 +86,6 @@ function ContractModal(props) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="客户/供应商(曾用名)">
-              {getFieldDecorator('oldClient', {
-                initialValue: mode === 'edit' ? info.oldClient : '',
-                rules: [
-                  {
-                    required: false,
-                    message: '请填写客户',
-                  },
-                ],
-              })(<Input />)}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
             <Form.Item label="客户/供应商">
               {getFieldDecorator('contract_client', {
                 initialValue: mode === 'edit' ? info.contract_client : '',
@@ -110,6 +99,20 @@ function ContractModal(props) {
             </Form.Item>
           </Col>
           <Col span={8}>
+            <Form.Item label="客户/供应商(曾用名)">
+              {getFieldDecorator('oldClient', {
+                initialValue: mode === 'edit' ? info.oldClient : '',
+                rules: [
+                  {
+                    required: false,
+                    message: '请填写客户',
+                  },
+                ],
+              })(<Input />)}
+            </Form.Item>
+          </Col>
+
+          <Col span={8}>
             <Form.Item label="签约时间">
               {getFieldDecorator('signTime', {
                 initialValue: mode === 'edit' ? moment(info.signTime) : null,
@@ -119,7 +122,7 @@ function ContractModal(props) {
                     message: '请填写时间',
                   },
                 ],
-              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+              })(<DatePicker locale={locale} showTime format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -132,7 +135,7 @@ function ContractModal(props) {
                     message: '请填写到期时间',
                   },
                 ],
-              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+              })(<DatePicker locale={locale} showTime format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -234,13 +237,25 @@ function ContractModal(props) {
       }
     })
   }
+
+  const footer = (
+    [
+      <Button key="back" onClick={handleCancel}>
+        取消
+      </Button>,
+      <Button key="submit" className={role === 'admin' ? '' : 'hidden'} type="primary" loading={btnLoading} onClick={handleConfirm}>
+        提交
+      </Button>,
+    ]
+  )
   return (
     <Modal
-      title="Title"
+      title={`${mode === 'edit' ? '编辑合同' : '添加合同'}`}
       visible={visible}
-      onOk={handleConfirm}
-      confirmLoading={btnLoading}
+      // onOk={handleConfirm}
+      // confirmLoading={btnLoading}
       onCancel={handleCancel}
+      footer={footer}
       width={'60%'}
     >
       {content}

@@ -56,11 +56,34 @@ const deleteContract = (id) => {
   return exec(sql).catch(err => console.log(err))
 }
 
+
+const getContractLimitation = () => {
+  const sql = `
+  select limitation
+  from contractmgmt.yc_limitation
+  where id = 1
+  `
+  return exec(sql).catch(err => console.log(err))
+}
+
+const updateContractLimitation = (limit) => {
+  const sql = `
+    UPDATE contractmgmt.yc_limitation
+    SET
+    limitation = ${limit}
+    where id = 1;
+  `
+  return exec(sql).catch(err => console.log(err))
+}
+
+
 module.exports = {
   getAllcontracts,
   addContract,
   editContract,
-  deleteContract
+  deleteContract,
+  getContractLimitation,
+  updateContractLimitation
 }
 
 

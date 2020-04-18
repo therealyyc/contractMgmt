@@ -4,7 +4,9 @@ const _ = require('lodash')
 const moment = require('moment')
 
 const getAllcontracts = async () => {
-  const limitation = 3;
+  let limitation;
+  let limitationRow = await contractsService.getContractLimitation()
+  limitation = limitationRow[0].limitation
   let contracts = await contractsService.getAllcontracts()
   //console.log()
   let limitedContracts = _.map(contracts, (contract) => {
@@ -39,10 +41,20 @@ const deleteContract = (id) => {
   return contractsService.deleteContract(id)
 }
 
+const getContractLimitation = () => {
+  return contractsService.getContractLimitation()
+}
+
+const updateContractLimitation = (limit) => {
+  return contractsService.updateContractLimitation(limit)
+}
+
 
 module.exports = {
   getAllcontracts,
   addContract,
   editContract,
-  deleteContract
+  deleteContract,
+  getContractLimitation,
+  updateContractLimitation
 }

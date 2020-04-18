@@ -23,15 +23,18 @@ import {
   fetchApi,
   setContracts,
   setOriginContracts,
+  setContractLimit,
   deleteApi,
   refreshTableData,
   setSearchValue,
   fetchContractType,
-  setContractTypes
+  setContractTypes,
+  fetchLimit
 } from '../service/actions'
 
 import ContractModal from './Modal'
 import DeadLineModal from './DeadLineModal'
+import moment from 'moment'
 import './style.scss'
 
 const { Search } = Input;
@@ -45,8 +48,11 @@ function List(props) {
   const {
     contracts,
     table_loading,
-    contractTypes
+    limit
   } = useSelector(state => state.home)
+  const {
+    role
+  } = useSelector(state => state.login)
   const dispatch = useDispatch()
 
 
@@ -54,7 +60,8 @@ function List(props) {
   useEffect(() => {
     (async () => {
       let res = await fetchApi()
-      console.log('res', res)
+      let limitres = await fetchLimit()
+      dispatch(setContractLimit(_.get(limitres, ['data', 'limitation'], 3)))
       dispatch(setContracts(_.get(res, ['data'], [])))
       dispatch(setOriginContracts(_.get(res, ['data'], [])))
     })()
@@ -83,6 +90,22 @@ function List(props) {
     }
   }
 
+  const contractTypes = [{
+    id: "1",
+    name: '合同'
+  }, {
+    id: "2",
+    name: '分包合同'
+  }]
+
+  const timeFormat = (time) => {
+    if (time) {
+      return moment(time).format('YYYY-MM-DD HH:mm')
+    } else {
+      return '时间未设置'
+    }
+  }
+
 
   const columns = [
     {
@@ -100,7 +123,7 @@ function List(props) {
       ],
       filterMultiple: false,
       onFilter: (value, record) => {
-        return value === record.type;
+        return value === record.contract_type;
       },
       render: text => <a>{findNameByid(contractTypes, text)}</a>,
     },
@@ -119,10 +142,12 @@ function List(props) {
     {
       title: '签约时间',
       dataIndex: 'signTime',
+      render: text => <span>{timeFormat(text)}</span>,
     },
     {
       title: '过期时间',
-      dataIndex: 'dueTime'
+      dataIndex: 'dueTime',
+      render: text => <span>{timeFormat(text)}</span>,
     },
     {
       title: '过期状态',
@@ -158,7 +183,7 @@ function List(props) {
         <span>
           <a onClick={() => { handleEdit(record) }}>修改</a>
           <Divider type="vertical" />
-          <a onClick={() => { handleDelete(record) }}>删除</a>
+          <a className={role === 'admin' ? '' : 'hidden'} onClick={() => { handleDelete(record) }}>删除</a>
         </span>
       ),
     },
@@ -208,11 +233,11 @@ function List(props) {
     <Fragment>
       <main className="contract-list">
         <section>
-          <Button style={{ float: 'left' }} type="primary" onClick={handleModalVisible}>添加合同</Button>
+          <Button className={role === 'admin' ? '' : 'hidden'} style={{ float: 'left' }} type="primary" onClick={handleModalVisible}>添加合同</Button>
           <Button style={{ float: 'left', marginLeft: '20px' }} type="primary" onClick={() => { setDeadlineModalVisible(true) }}>设定期限</Button>
           <Input
             prefix={<Icon type="search" />}
-            placeholder="输入搜索内容"
+            placeholder="输入搜索的客户名"
             style={{ width: 200, float: "right" }}
             onChange={e => { dispatch(setSearchValue(e.target.value)) }}
           >
@@ -235,11 +260,14 @@ function List(props) {
         setVisible={setVisible}
         mode={mode}
         info={info.current}
+        role={role}
       />
       <DeadLineModal
         title="配置"
+        limit={limit}
         visible={deadlineModalVisible}
         setVisible={setDeadlineModalVisible}
+        role={role}
       />
     </Fragment>
   )

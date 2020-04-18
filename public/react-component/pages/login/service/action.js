@@ -35,7 +35,7 @@ export async function request_login(param) {
 
   return Promise.resolve(
     axios({
-      url: `/api/login`,
+      url: `/api/login/validateUser`,
       method: 'POST',
       data: param,
     }))

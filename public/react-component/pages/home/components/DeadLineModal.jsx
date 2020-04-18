@@ -27,29 +27,29 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   fetchContractType,
   setContractTypes,
-  postEditLimit
+  postEditLimit,
+  setContractLimit
 } from '../service/actions'
 
 const { Option } = Select;
 
 function DeadLineModal(props) {
 
-  useEffect(() => {
-    (async () => {
-      let typeRes = await fetchContractType()
-      dispatch(setContractTypes(_.get(typeRes, ['data', 'data'])))
-    })()
+  // useEffect(() => {
+  //   (async () => {
+  //     let typeRes = await fetchContractType()
+  //     dispatch(setContractTypes(_.get(typeRes, ['data', 'data'])))
+  //   })()
 
-  }, [])
+  // }, [])
   const {
     form,
     visible,
     setVisible,
+    limit,
+    role
   } = props
 
-  const {
-    limit
-  } = useSelector(state => state.home)
   const [btnLoading, setBtnLoading] = useState(false)
   const { getFieldDecorator } = form;
   const dispatch = useDispatch()
@@ -91,6 +91,7 @@ function DeadLineModal(props) {
         setBtnLoading(true)
         let res = await postEditLimit(values)
         if (res) {
+          dispatch(setContractLimit(values.limit))
           setBtnLoading(false)
           message.success(`修改成功`)
           handleCancel()
@@ -101,13 +102,25 @@ function DeadLineModal(props) {
       }
     })
   }
+
+  const footer = (
+    [
+      <Button key="back" onClick={handleCancel}>
+        取消
+      </Button>,
+      <Button key="submit" className={role === 'admin' ? '' : 'hidden'} type="primary" loading={btnLoading} onClick={handleConfirm}>
+        提交
+      </Button>,
+    ]
+  )
   return (
     <Modal
       title="配置"
       visible={visible}
-      onOk={handleConfirm}
-      confirmLoading={btnLoading}
+      // onOk={handleConfirm}
+      // confirmLoading={btnLoading}
       onCancel={handleCancel}
+      footer={footer}
     >
       {content}
     </Modal>

@@ -1,12 +1,28 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import List from './components/List'
-import { Layout, Menu, Breadcrumb, Icon } from 'antd';
+import { Layout, Menu, Breadcrumb, Icon, Button } from 'antd';
+import {
+  useHistory
+} from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { setRole } from '../login/service/action';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 
 function Home(props) {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const role = localStorage.getItem('role')
+    dispatch(setRole(role))
+  }, [])
+  let history = useHistory();
+  const handleLogOut = () => {
+    localStorage.setItem('loginStatus', false);
+    localStorage.removeItem('role')
+    history.replace('/');
+  }
   return (
     <Fragment>
       <Layout style={{ height: '100%' }}>
@@ -19,6 +35,7 @@ function Home(props) {
             style={{ lineHeight: '64px' }}
           >
           </Menu>
+          <Button className="logOutBtn" style={{ position: 'absolute', 'top': '10px', 'right': '10px' }} type="link" onClick={handleLogOut}>退出登录</Button>
         </Header>
         <Layout>
           <Sider width={200} style={{ background: '#fff' }}>
@@ -38,17 +55,12 @@ function Home(props) {
                 }
               >
                 <Menu.Item key="1">所有合同</Menu.Item>
-                <Menu.Item key="2">即将过期合同</Menu.Item>
+
               </SubMenu>
             </Menu>
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              {
-                //<Breadcrumb.Item>Home</Breadcrumb.Item>
-                //<Breadcrumb.Item>List</Breadcrumb.Item>
-                //<Breadcrumb.Item>App</Breadcrumb.Item>
-              }
 
             </Breadcrumb>
             <Content

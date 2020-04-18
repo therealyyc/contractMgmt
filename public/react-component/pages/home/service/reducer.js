@@ -3,7 +3,8 @@ import {
   ACTION_SET_ORIGIN_CONTRACTS,
   ACTION_SET_TABLE_LOADING,
   ACTION_SET_SEARCH_VALUE,
-  ACTION_SET_CONTRACT_TYPES
+  ACTION_SET_CONTRACT_TYPES,
+  ACTION_SET_CONTRACT_LIMIT
 } from './actions'
 
 const initialState = {
@@ -35,13 +36,17 @@ export default function (state = initialState, action) {
       return Object.assign({}, state, {
         [name]: payload
       })
+    case ACTION_SET_CONTRACT_LIMIT:
+      return Object.assign({}, state, {
+        [name]: payload
+      })
     case ACTION_SET_SEARCH_VALUE:
       if (!payload) {
         return Object.assign({}, state, {
           contracts: origin_contracts
         })
       } else {
-        const searchKeys = ['type', 'client']
+        const searchKeys = ['contract_client']
         let ret = []
         let filterArr = origin_contracts.map(contract => {
           let rett = []
@@ -50,7 +55,6 @@ export default function (state = initialState, action) {
           }
           return rett
         })
-        console.log('filterArr', filterArr, origin_contracts)
         filterArr.map((arr, index) => {
           console.log('arr', arr)
           arr.some(a => a.includes(payload))
